@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "Judo rozhodčí → Kalendář",
+  "version": "2.0.0",
+  "description": "Jedním kliknutím ulož delegované judo turnaje z portálu rozhodčích do Google Kalendáře nebo ICS souboru.",
+  "permissions": [
+    "identity",
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://rozhodci.csju.cz/*"
+  ],
+  "oauth2": {
+    "client_id": "enter your client id",
+    "scopes": [
+      "https://www.googleapis.com/auth/calendar.events",
+      "https://www.googleapis.com/auth/userinfo.email"
+    ]
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://rozhodci.csju.cz/*"],
+      "js": ["content.js"],
+      "css": ["content-styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

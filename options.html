@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Nastavení – Judo Kalendář</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f6f8; color: #1a1a1a; line-height: 1.5; }
+    .container { max-width: 600px; margin: 0 auto; padding: 32px 20px; }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 24px; }
+    .card { background: #fff; border: 1px solid #e4e4e4; border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+    .card h2 { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 16px; }
+    .field { margin-bottom: 16px; }
+    .field:last-child { margin-bottom: 0; }
+    .field label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 5px; }
+    .field .hint { font-size: 11px; color: #999; margin-top: 3px; }
+    select, input[type="number"] { padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; font-family: inherit; background: #fff; }
+    select { width: 100%; }
+    input[type="number"] { width: 140px; }
+    select:focus, input[type="number"]:focus { outline: none; border-color: #4285f4; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; }
+    .toggle-label { font-size: 14px; color: #333; }
+    .toggle-label small { display: block; font-size: 11px; color: #999; margin-top: 2px; }
+    .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #ccc; border-radius: 24px; transition: 0.3s; }
+    .toggle .slider::before { content: ""; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+    .toggle input:checked + .slider { background: #4285f4; }
+    .toggle input:checked + .slider::before { transform: translateX(20px); }
+    .color-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+    .color-opt { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: border-color 0.2s, transform 0.1s; }
+    .color-opt:hover { transform: scale(1.1); }
+    .color-opt.active { border-color: #333; }
+    .save-bar { position: sticky; bottom: 0; background: #fff; border-top: 1px solid #e4e4e4; padding: 16px 24px; margin: 0 -20px; display: flex; justify-content: flex-end; gap: 10px; align-items: center; }
+    .btn { padding: 10px 24px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+    .btn-primary { background: #4285f4; color: #fff; }
+    .btn-primary:hover { background: #3367d6; }
+    .btn-secondary { background: #f1f1f1; color: #555; }
+    .saved-msg { display: none; align-items: center; gap: 6px; font-size: 14px; color: #34a853; font-weight: 600; }
+    .saved-msg.show { display: flex; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🥋 Nastavení rozšíření</h1>
+
+    <div class="card">
+      <h2>📅 Vzhled událostí v Google Kalendáři</h2>
+
+      <div class="field">
+        <label>Barva události</label>
+        <div class="color-grid" id="colorGrid">
+          <div class="color-opt" data-value="10" style="background:#0b8043" title="Bazalka (zelená)"></div>
+          <div class="color-opt" data-value="2" style="background:#7986cb" title="Šalvěj"></div>
+          <div class="color-opt" data-value="9" style="background:#3f51b5" title="Borůvka"></div>
+          <div class="color-opt" data-value="5" style="background:#f6bf26" title="Banán"></div>
+          <div class="color-opt" data-value="6" style="background:#f4511e" title="Mandarinka"></div>
+          <div class="color-opt" data-value="11" style="background:#d50000" title="Rajče"></div>
+          <div class="color-opt" data-value="3" style="background:#8e24aa" title="Hrozen"></div>
+          <div class="color-opt" data-value="7" style="background:#039be5" title="Páv"></div>
+          <div class="color-opt" data-value="1" style="background:#a4bdfc" title="Levandule"></div>
+          <div class="color-opt" data-value="4" style="background:#e67c73" title="Plameňák"></div>
+          <div class="color-opt" data-value="8" style="background:#616161" title="Grafit"></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Kalendář</label>
+        <select id="calendarId">
+          <option value="primary">Hlavní kalendář (výchozí)</option>
+        </select>
+        <div class="hint">Pro vlastní kalendář vlož jeho ID (najdeš v nastavení Google Kalendáře → „Integrovat kalendář").</div>
+      </div>
+
+      <div class="field">
+        <label>1. připomínka (minuty před turnajem)</label>
+        <input type="number" id="reminder1" min="0" max="40320" step="1">
+        <div class="hint">1440 = 1 den · 10080 = 1 týden · 0 = vypnuto</div>
+      </div>
+
+      <div class="field">
+        <label>2. připomínka</label>
+        <input type="number" id="reminder2" min="0" max="40320" step="1">
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-label">Emoji 🥋 v názvu události<small>Přidá „🥋" před název turnaje v kalendáři</small></div>
+        <label class="toggle"><input type="checkbox" id="addEmoji"><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <div class="save-bar">
+      <span class="saved-msg" id="savedMsg">✓ Uloženo</span>
+      <button class="btn btn-secondary" id="btnReset">Obnovit výchozí</button>
+      <button class="btn btn-primary" id="btnSave">Uložit nastavení</button>
+    </div>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

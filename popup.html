@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 360px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fafafa; color: #1a1a1a; overflow-x: hidden; }
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .welcome-header { background: linear-gradient(135deg, #1557b0, #4285f4); color: #fff; padding: 32px 24px 28px; text-align: center; }
+    .welcome-logo { width: 64px; height: 64px; background: rgba(255,255,255,0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 14px; }
+    .welcome-header h1 { font-size: 19px; font-weight: 700; margin-bottom: 6px; }
+    .welcome-header p { font-size: 13px; opacity: 0.9; line-height: 1.5; }
+    .welcome-body { padding: 20px 24px 24px; }
+    .welcome-steps { list-style: none; margin-bottom: 20px; }
+    .welcome-steps li { display: flex; align-items: flex-start; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; color: #444; line-height: 1.45; }
+    .welcome-steps li:last-child { border-bottom: none; }
+    .step-num { width: 28px; height: 28px; background: #e8f0fe; color: #1a73e8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+    .btn-google { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px 20px; background: #fff; color: #3c4043; border: 2px solid #dadce0; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .btn-google:hover { background: #f7f8f8; border-color: #1a73e8; color: #1a73e8; }
+    .btn-google:disabled { opacity: 0.6; cursor: wait; }
+    .btn-google svg { flex-shrink: 0; }
+    .welcome-note { margin-top: 16px; padding: 10px 14px; background: #f8f9fa; border-radius: 8px; font-size: 11.5px; color: #888; line-height: 1.5; text-align: center; }
+    .ics-note { margin-top: 10px; padding: 10px 14px; background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; font-size: 11.5px; color: #7c6b1f; line-height: 1.5; text-align: center; }
+
+    .dash-header { background: linear-gradient(135deg, #0d652d, #34a853); color: #fff; padding: 20px 24px; display: flex; align-items: center; gap: 14px; }
+    .dash-check { width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .dash-header-text h1 { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+    .dash-header-text p { font-size: 12px; opacity: 0.9; }
+    .dash-body { padding: 16px 20px 20px; }
+
+    .account-card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #fff; border: 1px solid #e4e4e4; border-radius: 10px; margin-bottom: 12px; }
+    .account-avatar { width: 36px; height: 36px; background: #e8f0fe; color: #1a73e8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; }
+    .account-info { flex: 1; min-width: 0; }
+    .account-info strong { display: block; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .account-info span { font-size: 11px; color: #34a853; font-weight: 500; }
+
+    .stats-row { display: flex; gap: 8px; margin-bottom: 12px; }
+    .stat-card { flex: 1; padding: 12px 14px; background: #fff; border: 1px solid #e4e4e4; border-radius: 10px; text-align: center; }
+    .stat-card .num { font-size: 22px; font-weight: 700; color: #1a73e8; line-height: 1; margin-bottom: 3px; }
+    .stat-card .label { font-size: 11px; color: #888; }
+
+    .how-to { padding: 14px 16px; background: #f0f6ff; border-radius: 10px; margin-bottom: 12px; }
+    .how-to h3 { font-size: 12px; font-weight: 700; color: #1a73e8; margin-bottom: 8px; }
+    .how-to p { font-size: 12.5px; color: #555; line-height: 1.6; margin-bottom: 8px; }
+    .how-to p:last-child { margin-bottom: 0; }
+    .how-to strong { color: #1a73e8; }
+
+    .btn-portal { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px 16px; background: #4285f4; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 8px; font-family: inherit; text-decoration: none; transition: background 0.2s; }
+    .btn-portal:hover { background: #3367d6; }
+    .bottom-actions { display: flex; justify-content: space-between; align-items: center; padding-top: 4px; }
+    .btn-link { background: none; border: none; color: #999; font-size: 12px; cursor: pointer; font-family: inherit; transition: color 0.2s; padding: 6px 0; }
+    .btn-link:hover { color: #4285f4; }
+    .btn-link.danger:hover { color: #ea4335; }
+
+    .loading { padding: 60px 24px; text-align: center; }
+    .loading-spinner { width: 32px; height: 32px; border: 3px solid #e8e8e8; border-top-color: #4285f4; border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading p { font-size: 14px; color: #777; }
+    .footer { padding: 10px 20px; text-align: center; font-size: 11px; color: #bbb; border-top: 1px solid #eee; }
+    .error-msg { display: none; margin-top: 12px; padding: 10px 14px; background: #fef0ef; border: 1px solid #f5c6c2; border-radius: 8px; font-size: 12px; color: #c62828; line-height: 1.5; }
+    .error-msg.show { display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="screen active" id="screenLoading">
+    <div class="loading"><div class="loading-spinner"></div><p>Kontroluji připojení…</p></div>
+  </div>
+
+  <div class="screen" id="screenWelcome">
+    <div class="welcome-header">
+      <div class="welcome-logo">🥋</div>
+      <h1>Turnaje do kalendáře</h1>
+      <p>Jedním kliknutím si ulož delegované<br>judo turnaje do kalendáře</p>
+    </div>
+    <div class="welcome-body">
+      <ul class="welcome-steps">
+        <li><span class="step-num">1</span><span>Přihlas se svým <strong>Google účtem</strong> (tlačítko níže)</span></li>
+        <li><span class="step-num">2</span><span>Otevři <strong>portál rozhodčích</strong> jako obvykle</span></li>
+        <li><span class="step-num">3</span><span>Klikni na modré tlačítko <strong>📅&nbsp;Uložit do kalendáře</strong></span></li>
+      </ul>
+      <button class="btn-google" id="btnLogin">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#34A853" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#FBBC05" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Přihlásit se přes Google
+      </button>
+      <div class="error-msg" id="loginError"></div>
+      <div class="welcome-note">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Rozšíření získá přístup <strong>pouze</strong> k vytváření událostí v&nbsp;kalendáři.
+      </div>
+      <div class="ics-note">
+        💡 <strong>Nepoužíváš Google?</strong> Nevadí – na portálu můžeš turnaje stáhnout jako .ics soubor, který funguje s Apple Calendar, Outlook, Seznam Kalendář i dalšími. Google přihlášení pak nepotřebuješ.
+      </div>
+    </div>
+    <div class="footer">v2.0 · Rozšíření pro rozhodčí ČSJU</div>
+  </div>
+
+  <div class="screen" id="screenDash">
+    <div class="dash-header">
+      <div class="dash-check"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="dash-header-text">
+        <h1>Vše připraveno ✓</h1>
+        <p>Google Kalendář je propojený</p>
+      </div>
+    </div>
+    <div class="dash-body">
+      <div class="account-card">
+        <div class="account-avatar" id="accountAvatar">?</div>
+        <div class="account-info">
+          <strong id="accountEmail">Načítám…</strong>
+          <span>● Připojeno ke kalendáři</span>
+        </div>
+      </div>
+      <div class="stats-row" id="statsRow" style="display:none;">
+        <div class="stat-card"><div class="num" id="statCount">0</div><div class="label">exportovaných</div></div>
+        <div class="stat-card"><div class="num" id="statDate">–</div><div class="label">poslední export</div></div>
+      </div>
+      <div class="how-to">
+        <h3>📅 Jak to použít</h3>
+        <p>Na portálu rozhodčích uvidíš modré tlačítko <strong>📅 Uložit do kalendáře</strong>. Klikni, vyber turnaje a máš dvě možnosti:</p>
+        <p><strong>Google Kalendář</strong> – uloží turnaje rovnou do tvého Google Kalendáře (potřebuješ přihlášení výše).</p>
+        <p><strong>Stáhnout .ics</strong> – stáhne soubor, který otevřeš v jakémkoliv kalendáři: Apple Calendar, Outlook, Seznam Kalendář, Thunderbird… Stačí na soubor dvakrát kliknout a turnaje se přidají.</p>
+      </div>
+      <a href="https://rozhodci.csju.cz/backend" target="_blank" class="btn-portal">Otevřít portál rozhodčích →</a>
+      <div class="bottom-actions">
+        <button class="btn-link" id="btnSettings">⚙️ Nastavení</button>
+        <button class="btn-link danger" id="btnDisconnect">Odpojit účet</button>
+      </div>
+    </div>
+    <div class="footer">v2.0 · Rozšíření pro rozhodčí ČSJU</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
