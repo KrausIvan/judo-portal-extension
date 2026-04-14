@@ -84,3 +84,11 @@ Publikuj na Chrome Web Store (viz samostatný návod) nebo pošli ZIP k ruční 
 - Google OAuth přes oficiální Chrome API
 - Přístup pouze k vytváření kalendářních událostí
 - Žádná data se neposílají na třetí servery
+
+- ---
+
+<footer style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid #e5e5e5;text-align:center;color:#666;font-size:.9rem">
+  <a href="https://judo-extension.ivankraus.com/privacy.html">Zásady ochrany soukromí / Privacy Policy</a>
+  · Ivan Kraus
+  · <a href="mailto:ivan.kraus04@gmail.com">ivan.kraus04@gmail.com</a>
+</footer>
